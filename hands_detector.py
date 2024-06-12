@@ -3,7 +3,8 @@ import mediapipe as mp
 import socket as sck
 
 ip = '127.0.0.1'
-port = 42001
+port = 42002
+player = 1
 
 
 mp_hands = mp.solutions.hands
@@ -11,7 +12,8 @@ hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_c
 cam_index: int = 0
 
 def send_data(value: int, s: sck.socket):
-    data = f'sensor-update \"left_y\" {-value}\n'
+    # data = f'sensor-update \"left_y\" {-value}\n'
+    data = f'{player} {-value}'
     s.sendto(data.encode(), (ip, port))
 
 
@@ -74,6 +76,7 @@ def hand_detector():
                 diff = draw_bounding_box(frame, hand_landmarks)
                 if diff is not None:
                     cv2.rectangle(frame, (390, 220 + diff), (590, 260 + diff), (255, 255, 0), 2)
+                    
                     send_data(diff, sckt)
                     
         cv2.line(frame, (0, 240), (640, 240), (0, 255, 0), 2)
