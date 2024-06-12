@@ -2,18 +2,19 @@ import socket
 import threading
 import time
 
-DEST_IP = '127.0.0.1'  
-DEST_PORT = 42001 
-SERV_IP = 0       
+SCRATCH_IP = '127.0.0.1'  
+SCRATCH_PORT = 42001 
+SERV_IP = '192.20.98.35'       
 SERV_PORT = 42002
+PLAYER_SIDE = 'left'
 
 values = {}
 
 def calculate_mean_and_send(values:dict, udp_to_scratch_socket:socket.socket):
     mean_value = int(sum(values.values()) / len(values))
     print(f"Current mean value of received integers: {mean_value}")
-    data = f'sensor-update \"left_y\" {mean_value}\n'
-    udp_to_scratch_socket.sendto(data.encode(), (DEST_IP, DEST_PORT))
+    data = f'sensor-update \"{PLAYER_SIDE}_y\" {mean_value}\n'
+    udp_to_scratch_socket.sendto(data.encode(), (SCRATCH_IP, SCRATCH_PORT))
 
 def start_server(host=SERV_IP, port=SERV_PORT):
     udp_to_scratch_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
